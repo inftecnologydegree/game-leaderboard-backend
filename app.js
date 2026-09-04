@@ -1,6 +1,6 @@
 //const API_URL = 'http://localhost:3000/api/leaderboard';
 // Remova o localhost:3000 e coloque o seu link oficial do Render
-const API_URL = 'https://onrender.com';
+const API_URL = 'https://game-leaderboard-backend.onrender.com';
 const SECRET_KEY = 'MySuperSecretGameKey123'; // A mesma chave usada na Unity e Node
 
 
