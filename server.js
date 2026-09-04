@@ -1,3 +1,5 @@
+require('dotenv').config(); // Carrega as variáveis do arquivo .env local para a memória RAM
+
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs'); // Módulo nativo do Node para manipular arquivos
@@ -45,7 +47,8 @@ const crypto = require('crypto'); // Built-in Node module for security
 // Define your shared secret key (In production, load this from environment variables)
 //const SECRET_KEY = 'MySuperSecretGameKey123';
 // Busca a chave das Variáveis de Ambiente da nuvem, ou mantém a padrão local de teste
-const SECRET_KEY = process.env.SECRET_KEY || 'MySuperSecretGameKey123';
+ //const SECRET_KEY = process.env.SECRET_KEY || 'MySuperSecretGameKey123';
+ const SECRET_KEY = process.env.SECRET_KEY;
 
 ///////////////////////////HMAC//////////////////////
 // --- ROTAS DA API ---
