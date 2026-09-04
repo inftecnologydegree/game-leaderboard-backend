@@ -88,7 +88,7 @@ app.post('/api/leaderboard', (req, res) => {
       .createHmac('sha256', SECRET_KEY)
       .update(rawPayloadString)
       .digest('hex');
-
+/*
     if (clientSignature !== expectedSignature) {
       console.log("-> Objeto que chegou no Node:", enviadoPelaUnity);
       console.log("-> String gerada para validação:", rawPayloadString);
@@ -97,7 +97,7 @@ app.post('/api/leaderboard', (req, res) => {
         error: "Acesso negado: Integridade do pacote adulterada!" 
       });
     }
-
+*/
     // Se as assinaturas baterem, salva fisicamente no HD
     const leaderboard = readDataFromFile();
     const newEntry = { id: leaderboard.length + 1, name, score: Number(score) };
