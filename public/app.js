@@ -1,67 +1,63 @@
 //const API_URL = 'http://localhost:3000/api/leaderboard';
 // Remova o localhost:3000 e coloque o seu link oficial do Render
-const API_URL = 'https://game-leaderboard-backend.onrender.com';
-const SECRET_KEY = 'MySuperSecretGameKey123'; // A mesma chave usada na Unity e Node
-
+const API_URL = 'https://onrender.com';
 
 // Seletores do DOM
 const leaderboardBody = document.getElementById('leaderboardBody');
 const scoreForm = document.getElementById('scoreForm');
 const messageElement = document.getElementById('message');
-// Função auxiliar para gerar o Hash HMAC SHA-256 em JavaScript puro no navegador
-async function generateHMAC(secret, jsonString) {
-    const encoder = new TextEncoder();
-    const keyData = encoder.encode(secret);
-    const messageData = encoder.encode(jsonString);
 
-    const cryptoKey = await window.crypto.subtle.importKey(
-        "raw", keyData,
-        { name: "HMAC", hash: { name: "SHA-256" } },
-        false, ["sign"]
-    );
+// Função para buscar e renderizar o Placar (GET)
+async function fetchLeaderboard() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-    const signatureBuffer = await window.crypto.subtle.sign("HMAC", cryptoKey, messageData);
-    return Array.from(new Uint8Array(signatureBuffer))
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
+        // Limpa a tabela antes de renderizar
+        leaderboardBody.innerHTML = '';
+
+        // Preenche a tabela com os dados da API
+        data.forEach((player, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${index + 1}º</strong></td>
+                <td>${player.name}</td>
+                <td>${player.score} pts</td>
+            `;
+            leaderboardBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Erro ao buscar leaderboard:', error);
+    }
 }
 
-// Modifique a parte do preenchimento do formulário dentro do seu app.js original:
+// Função para enviar uma nova pontuação (POST)
 scoreForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Impede a página de recarregar
 
     const name = document.getElementById('playerName').value;
     const score = document.getElementById('playerScore').value;
 
-    // 1. Monta o objeto exatamente no formato que a Unity envia na rede
-    const payloadObject = { id: 0, name: name, score: Number(score) };
-    const jsonBody = JSON.stringify(payloadObject);
-
     try {
-        // 2. Gera a assinatura de segurança direto no navegador do usuário
-        const signature = await generateHMAC(SECRET_KEY, jsonBody);
-
-        // 3. Dispara para o Render contendo o cabeçalho de autenticação!
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'X-Signature': signature // Passou pelo guarda da segurança!
+                'Content-Type': 'application/json'
             },
-            body: jsonBody
+            body: JSON.stringify({ name, score }) // Transforma as variáveis em string JSON
         });
 
         const result = await response.json();
 
         if (response.ok) {
-            showMessage("Enviado para a nuvem com sucesso! 🛡️", 'success');
-            scoreForm.reset();
-            fetchLeaderboard(); // Atualiza a tabela na tela
+            showMessage(result.message, 'success');
+            scoreForm.reset(); // Limpa os campos do formulário
+            fetchLeaderboard(); // Atualiza a tabela na tela imediatamente!
         } else {
-            showMessage(result.error || 'Erro na nuvem.', 'error');
+            showMessage(result.error || 'Erro ao salvar.', 'error');
         }
     } catch (error) {
-        showMessage('Erro crítico de rede.', 'error');
+        showMessage('Não foi possível conectar ao servidor.', 'error');
     }
 });
 
