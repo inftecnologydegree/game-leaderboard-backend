@@ -43,12 +43,12 @@ function writeDataToFile(data) {
   fs.writeFileSync(FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
 }
 ///////////////////////////HMAC///////////////////////////////
-const crypto = require('crypto'); // Built-in Node module for security
+//const crypto = require('crypto'); // Built-in Node module for security
 // Define your shared secret key (In production, load this from environment variables)
 //const SECRET_KEY = 'MySuperSecretGameKey123';
 // Busca a chave das Variáveis de Ambiente da nuvem, ou mantém a padrão local de teste
- //const SECRET_KEY = process.env.SECRET_KEY || 'MySuperSecretGameKey123';
- const SECRET_KEY = process.env.SECRET_KEY;
+ const SECRET_KEY = process.env.SECRET_KEY || 'MySuperSecretGameKey123';
+ //const SECRET_KEY = process.env.SECRET_KEY;
 
 ///////////////////////////HMAC//////////////////////
 // --- ROTAS DA API ---
