@@ -1,6 +1,9 @@
 //const API_URL = 'http://localhost:3000/api/leaderboard';
 // Remova o localhost:3000 e coloque o seu link oficial do Render
-const API_URL = 'https://onrender.com';
+const API_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"
+    ? "http://localhost:3000" 
+    : "https://back-end-node-api.onrender.com"; // 👈 Atualizado com o link gerado pelo Render
+
 
 // Seletores do DOM
 const leaderboardBody = document.getElementById('leaderboardBody');
